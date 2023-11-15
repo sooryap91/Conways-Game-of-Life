@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Conway's Game of Life</title>
+<h1>Conway's Game of Life</h1>
+<style>
+    /* adding css properties */
+     #board {
+     display: grid;
+     grid-template-columns: repeat(50, 10px);
+            }
+    .cell   {
+      width: 10px;
+      height: 10px;
+      border: 1px solid black;
+      background-color:white;
+             }
+</style>
+<link rel="stylesheet" href="styles.css">
+
+
+</head>
+<body>
+<div id="board"></div>
+
+<script src="conway.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Define size of the grid
+          var width = 50;
+          var height = 50;
+        // calling Create grid function
+          var grid = createGrid(width, height);
+        //   console.table(grid)
+    // calling Initialize  game function
+    initializeGame(grid);
+    
+    //   create grid function
+    function createGrid(width, height) {
+        var grid = new Array(height);
+        for (var i = 0; i < height; i++) {
+          grid[i] = new Array(width).fill(false);
+        }
+        return grid;
+      }
+    // create initializeGame function
+    function initializeGame(grid) {
+    var board = document.getElementById("board");
+    // Create cells and add them to the board
+    for (var i = 0; i < height; i++) {
+    for (var j = 0; j < width; j++) {
+    var cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.setAttribute("data-row", i);
+    cell.setAttribute("data-col", j);
+    board.appendChild(cell);
+          }
+        }
+    // Add event listener to each cell
+    var cells = document.querySelectorAll(".cell");
+    cells.forEach(function(cell) {
+    cell.addEventListener("click", function() {
+    toggleCell(cell);
+          });
+          });
+    
+        // Start the game loop
+        // games updates for every 4000 seconds
+     setInterval(updateGame,5000);
+    // defining the toggle function
+    function toggleCell(cell) {
+    var row = parseInt(cell.getAttribute("data-row"));
+    var col = parseInt(cell.getAttribute("data-col"));
+    grid[row][col] = !grid[row][col];
+    cell.style.backgroundColor = grid[row][col] ? "#000" : "#fff";
+        }
+    
+        // defining the update function
+    
+    function updateGame() {
+    var newGrid = createGrid(width, height);
+    for (var i = 0; i < height; i++) {
+    for (var j = 0; j < width; j++) {
+    var liveNeighbors = countLiveNeighbors(i, j);
+              if (grid[i][j]) {
+                if (liveNeighbors < 2 || liveNeighbors > 3) {
+                  newGrid[i][j] = false;
+                } else {
+                  newGrid[i][j] = true;
+                }
+              } else {
+                if (liveNeighbors === 3) {
+                  newGrid[i][j] = true;
+                } else {
+                  newGrid[i][j] = false;
+                }
+              }
+              console.log(liveNeighbors)
+    var cell = document.querySelector(".cell[data-row='" + i + "'][data-col='" + j + "']"
+              );
+    cell.style.backgroundColor = newGrid[i][j] ? "red" : "white";
+            }
+            }
+    grid = newGrid;
+        }
+    
+    function countLiveNeighbors(row, col) {
+    var count = 0;
+            for (var i = -1; i <= 1; i++) {
+            for (var j = -1; j <= 1; j++) {
+            if (i === 0 && j === 0) 
+            continue;
+    var newRow = (row + i + height) % height;
+    var newCol = (col + j + width) % width;
+      if (grid[newRow][newCol]) {
+      count++;
+              }
+            }
+          }
+    
+          return count;
+        }
+      }
+    });
+    
+    function cellNeighbors(x, y) {
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i !== 0 || j !== 0) {
+             neighbors.push([x + i, y + j]);
+          }
+        }
+      }
+    
+      return neighbors;
+    
+    }
+    
+</script>
+</body>
+</html>
